@@ -8,8 +8,8 @@
     let
       leanPkgs = lean.packages.${system};
       pkg = leanPkgs.buildLeanPackage {
-        name = "Balancing";  # must match the name of the top-level .lean file
-        src = ./.;
+        name = "Ledger";  # must match the name of the top-level .lean file
+        src = ./src;
       };
     in {
       packages = pkg // {
