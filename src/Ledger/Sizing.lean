@@ -3,6 +3,13 @@
 namespace Ledger.Sizing
 
 
+-- A bundle of tokens.
+structure TokenBundle :=
+  numPolicies         : Nat
+  numAssets           : Nat
+  sumAssetNameLengths : Nat
+
+
 -- Compute the size in words needed to hold a given number of bytes.
 def roundupBytesToWords (bytes : Nat) : Nat :=
   (bytes + 7) / 8
@@ -33,16 +40,16 @@ example : adaOnlyUTxOSize = 29 := rfl
 
 
 -- The size in words of a token bundle.
-def tokenBundleSize (numPolicies numAssets sumAssetNameLengths : Nat) : Nat :=
+def tokenBundleSize (tb : TokenBundle) : Nat :=
   6 + roundupBytesToWords (
-    numPolicies * pidSize + 12 * numAssets + sumAssetNameLengths
+    tb.numPolicies * pidSize + 12 * tb.numAssets + tb.sumAssetNameLengths
   )
 
-example : tokenBundleSize  0   0  0         =   6 := rfl
-example : tokenBundleSize  1   1  1         =  12 := rfl
-example : tokenBundleSize  1   1 32         =  15 := rfl
-example : tokenBundleSize  1 110 (110 * 32) = 615 := rfl
-example : tokenBundleSize 60  60 ( 60 * 32) = 546 := rfl
+example : tokenBundleSize {numPolicies :=  0, numAssets :=   0, sumAssetNameLengths :=        0} =   6 := rfl
+example : tokenBundleSize {numPolicies :=  1, numAssets :=   1, sumAssetNameLengths :=        1} =  12 := rfl
+example : tokenBundleSize {numPolicies :=  1, numAssets :=   1, sumAssetNameLengths :=       32} =  15 := rfl
+example : tokenBundleSize {numPolicies :=  1, numAssets := 110, sumAssetNameLengths := 110 * 32} = 615 := rfl
+example : tokenBundleSize {numPolicies := 60, numAssets :=  60, sumAssetNameLengths :=  60 * 32} = 546 := rfl
 
 
 -- The size in words of a datum hash.
@@ -53,11 +60,11 @@ def dataHashSize (hasDatum : Bool) : Nat :=
 
 
 -- | The size in words of a UTxO entry.
-def utxoEntrySize (hasDatum : Bool) (numPolicies numAssets sumAssetNameLengths : Nat) :=
+def utxoEntrySize (hasDatum : Bool) (tb : TokenBundle) :=
   let valueSize :=
-    match sumAssetNameLengths with
+    match tb.sumAssetNameLengths with
     | 0 => adaOnlyUTxOSize
-    | _ => utxoEntrySizeWithoutVal + tokenBundleSize numPolicies numAssets sumAssetNameLengths
+    | _ => utxoEntrySizeWithoutVal + tokenBundleSize tb
   valueSize + dataHashSize hasDatum
 
 

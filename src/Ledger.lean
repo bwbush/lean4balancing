@@ -7,11 +7,12 @@ namespace Ledger
 
 
 open Ledger.Costing (feeForBytes minimumAda)
+open Ledger.Sizing  (TokenBundle)
 
 
-#eval feeForBytes 0
+#eval feeForBytes default 0
 
-#eval minimumAda false 1 1 1
+#eval minimumAda default false {numPolicies := 1, numAssets := 1, sumAssetNameLengths := 1}
 
 
 end Ledger
