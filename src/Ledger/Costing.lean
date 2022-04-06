@@ -35,4 +35,9 @@ example : feeForBytes default    0 = 155381         := rfl
 example : feeForBytes default 1000 = 155381 + 44000 := rfl
 
 
+-- Fee in Lovelace for a transaction of the specified size in words.
+def feeForWords (pp : ProtocolParameters) (words : Nat) : Nat :=
+  feeForBytes pp (8 * words)
+
+
 end Ledger.Costing

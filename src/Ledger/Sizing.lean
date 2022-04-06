@@ -60,12 +60,16 @@ def dataHashSize (hasDatum : Bool) : Nat :=
 
 
 -- | The size in words of a UTxO entry.
-def utxoEntrySize (hasDatum : Bool) (tb : TokenBundle) :=
+def utxoEntrySize (hasDatum : Bool) (tb : TokenBundle) : Nat :=
   let valueSize :=
     match tb.sumAssetNameLengths with
     | 0 => adaOnlyUTxOSize
     | _ => utxoEntrySizeWithoutVal + tokenBundleSize tb
   valueSize + dataHashSize hasDatum
+
+
+-- | The size in words of a transaction input.
+def txinEntrySize : Nat := 36 / 8  -- FIXME: Not verified!
 
 
 end Ledger.Sizing
