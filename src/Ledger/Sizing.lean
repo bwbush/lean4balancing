@@ -14,12 +14,6 @@ structure TokenBundle :=
 def roundupBytesToWords (bytes : Nat) : Nat :=
   (bytes + 7) / 8
 
-example : roundupBytesToWords  1 = 1 := rfl
-example : roundupBytesToWords  8 = 1 := rfl
-example : roundupBytesToWords  9 = 2 := rfl
-example : roundupBytesToWords 16 = 2 := rfl
-example : roundupBytesToWords 17 = 3 := rfl
-
 
 -- The policy ID size in bytes.
 def pidSize : Nat := 28
@@ -36,20 +30,12 @@ def utxoEntrySizeWithoutVal : Nat := 27
 -- The size of a UTxO if it only has ADA.
 def adaOnlyUTxOSize : Nat := utxoEntrySizeWithoutVal + coinSize
 
-example : adaOnlyUTxOSize = 29 := rfl
-
 
 -- The size in words of a token bundle.
 def tokenBundleSize (tb : TokenBundle) : Nat :=
   6 + roundupBytesToWords (
     tb.numPolicies * pidSize + 12 * tb.numAssets + tb.sumAssetNameLengths
   )
-
-example : tokenBundleSize {numPolicies :=  0, numAssets :=   0, sumAssetNameLengths :=        0} =   6 := rfl
-example : tokenBundleSize {numPolicies :=  1, numAssets :=   1, sumAssetNameLengths :=        1} =  12 := rfl
-example : tokenBundleSize {numPolicies :=  1, numAssets :=   1, sumAssetNameLengths :=       32} =  15 := rfl
-example : tokenBundleSize {numPolicies :=  1, numAssets := 110, sumAssetNameLengths := 110 * 32} = 615 := rfl
-example : tokenBundleSize {numPolicies := 60, numAssets :=  60, sumAssetNameLengths :=  60 * 32} = 546 := rfl
 
 
 -- The size in words of a datum hash.
